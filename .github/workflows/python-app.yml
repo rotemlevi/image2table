@@ -44,32 +44,19 @@ jobs:
 
     - name: Install Tesseract and language data files
       run: |
-        sudo mkdir -p /usr/local/share/tessdata/
         sudo apt-get update
         sudo apt-get install -y tesseract-ocr
         sudo apt-get install -y tesseract-ocr-eng tesseract-ocr-tha
-        sudo cp -r /usr/share/tesseract-ocr/4.00/tessdata/* /usr/local/share/tessdata/
-      env:
-        TESSDATA_PREFIX: /usr/local/share/tessdata/
-
-    - name: Verify Tesseract installation
-      run: |
-        echo "Tesseract version:"
-        tesseract --version
-        echo "TESSDATA_PREFIX is set to:"
-        echo $TESSDATA_PREFIX
-        echo "Contents of the tessdata directory:"
-        ls $TESSDATA_PREFIX
-      env:
-        TESSDATA_PREFIX: /usr/local/share/tessdata/
+        TESSDATA_PATH=$(dpkg -L tesseract-ocr-eng | grep tessdata | head -n 1 | xargs dirname)
+        echo "TESSDATA_PATH=$TESSDATA_PATH" >> $GITHUB_ENV
 
     - name: Process images to CSV
       run: |
         mkdir -p data/output
         python src/main.py data/images data/output
       env:
-        TESSDATA_PREFIX: /usr/local/share/tessdata/
-        
+        TESSDATA_PATH: ${{ env.TESSDATA_PATH }}
+
     - name: Upload CSV files
       uses: actions/upload-artifact@v2
       with:
