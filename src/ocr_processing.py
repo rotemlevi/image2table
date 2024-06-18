@@ -8,7 +8,8 @@ def extract_channel_from_line(line, channels):
     return None
 
 def correct_ocr_errors(text):
-    corrected_text = re.sub(r'\\bQ(\\d-\\d\\d-\\d\\d)\\b', r'0\\1', text)
+    # Correct OCR errors like Q2-06-24 to 02-06-24
+    corrected_text = re.sub(r'\bQ(\d{1}-\d{2}-\d{2})\b', r'0\1', text)
     return corrected_text
 
 def process_text_to_df(extracted_text):
@@ -24,7 +25,7 @@ def process_text_to_df(extracted_text):
         "Ko Samui Branch"
     ]
     
-    lines = extracted_text.strip().split('\\n')
+    lines = extracted_text.strip().split('\n')
     parsed_data = {
         "Date": [],
         "Time": [],
@@ -44,7 +45,7 @@ def process_text_to_df(extracted_text):
         channel = ""
         details = ""
 
-        date_match = re.match(r'^(\\d{2}-\\d{2}-\\d{2})\\s*[^\\w]*\\s*', line)
+        date_match = re.match(r'^(\d{2}-\d{2}-\d{2})\s*[^\w]*\s*', line)
         if date_match:
             date_col = date_match.group(0)
             date = date_match.group(1).strip()
@@ -52,25 +53,25 @@ def process_text_to_df(extracted_text):
         else:
             continue
          
-        time_match = re.match(r'(^\\d{2}:\\d{2})\\s*[^\\w]*\\s*', remaining)
+        time_match = re.match(r'(^\d{2}:\d{2})\s*[^\w]*\s*', remaining)
         if time_match:
             time_col = time_match.group(0)
             time = time_match.group(1).strip()
             remaining = remaining[len(time_col):].strip()
       
-        description_match = re.match(r'([a-zA-Z\\s]+)', remaining)
+        description_match = re.match(r'([a-zA-Z\s]+)', remaining)
         if description_match:
             description_col = description_match.group(0)
             description = description_match.group(1).strip()
             remaining = remaining[len(description_col):].strip()
         
-        withdrawal_deposit_match = re.match(r'^([\\d,]+\\.\\d{2})\\s*[^\\w]*\\s*', remaining)
+        withdrawal_deposit_match = re.match(r'^([\d,]+\.\d{2})\s*[^\w]*\s*', remaining)
         if withdrawal_deposit_match:
             withdrawal_deposit_col = withdrawal_deposit_match.group(0)
             withdrawal_deposit = withdrawal_deposit_match.group(1).strip()
             remaining = remaining[len(withdrawal_deposit_col):].strip()
         
-        outstanding_balance_match = re.match(r'^([\\d,]+\\.\\d{2})\\s*[^\\w]*\\s*', remaining)
+        outstanding_balance_match = re.match(r'^([\d,]+\.\d{2})\s*[^\w]*\s*', remaining)
         if outstanding_balance_match:
             outstanding_balance_col = outstanding_balance_match.group(0)
             outstanding_balance = outstanding_balance_match.group(1).strip()
