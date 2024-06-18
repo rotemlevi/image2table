@@ -48,7 +48,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y tesseract-ocr
         sudo apt-get install -y tesseract-ocr-eng tesseract-ocr-tha
-        sudo cp /usr/share/tesseract-ocr/4.00/tessdata/* /opt/hostedtoolcache/tessdata/
+        sudo cp -r /usr/share/tesseract-ocr/4.00/tessdata/* /opt/hostedtoolcache/tessdata/
       env:
         TESSDATA_PREFIX: /opt/hostedtoolcache/tessdata
 
