@@ -48,20 +48,7 @@ jobs:
         sudo apt-get install -y tesseract-ocr
         sudo apt-get install -y tesseract-ocr-eng tesseract-ocr-tha
         sudo mkdir -p /usr/local/share/tessdata
-        echo $(dpkg -L tesseract-ocr-eng | grep tessdata | head -n 1 | xargs dirname)/* /usr/local/share/tessdata/
         sudo mv $(dpkg -L tesseract-ocr-eng | grep tessdata | head -n 1 | xargs dirname)/* /usr/local/share/
-        echo "TESSDATA_PATH=/usr/local/share/tessdata" >> $GITHUB_ENV
-
-    - name: Verify Tesseract installation
-      run: |
-        echo "Tesseract version:"
-        tesseract --version
-        echo "TESSDATA_PATH is set to:"
-        echo $TESSDATA_PATH
-        echo "Contents of the tessdata directory:"
-        ls $TESSDATA_PATH
-      env:
-        TESSDATA_PATH: ${{ env.TESSDATA_PATH }}
 
     - name: Process images to CSV
       env:
