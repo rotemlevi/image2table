@@ -7,7 +7,7 @@ This project processes images to extract text using OCR and converts the text in
 
 ### Prerequisites
 
-- Python 3.7+
+- Python 3.12.3+
 - Tesseract OCR
 - GitHub Account
 - Git
