@@ -44,11 +44,24 @@ jobs:
 
     - name: Install Tesseract and language data files
       run: |
+        sudo mkdir -p /opt/hostedtoolcache/tessdata
         sudo apt-get update
         sudo apt-get install -y tesseract-ocr
         sudo apt-get install -y tesseract-ocr-eng tesseract-ocr-tha
-        export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
-        echo "TESSDATA_PREFIX set to $TESSDATA_PREFIX"
+        sudo cp /usr/share/tesseract-ocr/4.00/tessdata/* /opt/hostedtoolcache/tessdata/
+      env:
+        TESSDATA_PREFIX: /opt/hostedtoolcache/tessdata
+
+    - name: Verify Tesseract installation
+      run: |
+        echo "Tesseract version:"
+        tesseract --version
+        echo "TESSDATA_PREFIX is set to:"
+        echo $TESSDATA_PREFIX
+        echo "Contents of the tessdata directory:"
+        ls $TESSDATA_PREFIX
+      env:
+        TESSDATA_PREFIX: /opt/hostedtoolcache/tessdata
 
     - name: Process images to CSV
       run: |
