@@ -47,15 +47,27 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y tesseract-ocr
         sudo apt-get install -y tesseract-ocr-eng tesseract-ocr-tha
-        TESSDATA_PATH=$(dpkg -L tesseract-ocr-eng | grep tessdata | head -n 1 | xargs dirname)
-        echo "TESSDATA_PATH=$TESSDATA_PATH" >> $GITHUB_ENV
+        sudo mkdir -p /usr/local/share/tessdata
+        sudo mv $(dpkg -L tesseract-ocr-eng | grep tessdata | head -n 1 | xargs dirname)/* /usr/local/share/tessdata/
+        echo "TESSDATA_PATH=/usr/local/share/tessdata" >> $GITHUB_ENV
+
+    - name: Verify Tesseract installation
+      run: |
+        echo "Tesseract version:"
+        tesseract --version
+        echo "TESSDATA_PATH is set to:"
+        echo $TESSDATA_PATH
+        echo "Contents of the tessdata directory:"
+        ls $TESSDATA_PATH
+      env:
+        TESSDATA_PATH: ${{ env.TESSDATA_PATH }}
 
     - name: Process images to CSV
+      env:
+        TESSDATA_PATH: ${{ env.TESSDATA_PATH }}
       run: |
         mkdir -p data/output
         python src/main.py data/images data/output
-      env:
-        TESSDATA_PATH: ${{ env.TESSDATA_PATH }}
 
     - name: Upload CSV files
       uses: actions/upload-artifact@v2
