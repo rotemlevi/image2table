@@ -45,7 +45,8 @@ jobs:
     - name: Process images to CSV
       run: |
         mkdir -p data/output
-        python src/main.py data/images data/output
+        cd src
+        python main.py data/images data/output
 
     - name: Upload CSV files
       uses: actions/upload-artifact@v2
