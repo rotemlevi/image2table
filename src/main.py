@@ -1,8 +1,13 @@
+import sys
 import os
 import argparse
+import pytesseract
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from PIL import Image
 from src.image_processing import enhance_image
 from src.ocr_processing import correct_ocr_errors, process_text_to_df
+
+os.environ['TESSDATA_PREFIX'] = '/usr/local/share/tessdata/'
 
 def process_image_to_df(image_path, output_dir):
     image = Image.open(image_path)

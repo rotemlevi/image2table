@@ -42,6 +42,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Install Tesseract and language data files
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y tesseract-ocr
+        sudo apt-get install -y tesseract-ocr-eng tesseract-ocr-tha
+        export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
+        echo "TESSDATA_PREFIX set to $TESSDATA_PREFIX"
+
     - name: Process images to CSV
       run: |
         mkdir -p data/output
