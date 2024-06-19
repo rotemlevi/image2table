@@ -35,8 +35,22 @@ def process_text_to_df(extracted_text):
         "Channel": [],
         "Details": []
     }
+    # Combine multi-line entries based on date patterns
+    combined_lines = []
+    temp_line = ""
 
     for line in lines:
+        if re.match(r'^\d{2}-\d{2}-\d{2}', line):
+            if temp_line:
+                combined_lines.append(temp_line.strip())
+            temp_line = line.strip()
+        else:
+            temp_line += " " + line.strip()
+
+    if temp_line:
+        combined_lines.append(temp_line.strip())
+        
+    for line in combined_lines:
         date = ""
         time = ""
         description = ""
